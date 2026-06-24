@@ -4,6 +4,7 @@ import { saveTask, getLastTask, getTasks } from './memory.js';
 import { queryGroq } from './groq.js';
 import fs from 'fs/promises';
 import path from 'path';
+import { executeTask } from './openclaw.js';
 
 dotenv.config();
 
@@ -183,6 +184,8 @@ ${needsCall}`;
 
       // Dispatch to OpenClaw via #agent-coder
       await postToChannel('#agent-coder', `[TASK-ID: ${taskId}] Execute: ${prompt}`);
+      console.log("DISPATCHED TO AGENT-CODER:", taskId);
+      await executeTask(taskId, prompt, app);
       await say(`Plan logged to \`#agent-log\`. Task dispatched to OpenClaw in \`#agent-coder\`.`);
 
     } catch (err) {

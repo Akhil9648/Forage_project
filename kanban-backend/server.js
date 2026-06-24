@@ -204,3 +204,6 @@ app.delete('/api/cards/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Kanban API server running on port ${PORT}`);
 });
+
+export default app;
+
