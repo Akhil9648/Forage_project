@@ -1,0 +1,4 @@
+.env
+agent-log.md
+data/
+node_modules

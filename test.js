@@ -1,0 +1,1 @@
+import { greet } from './greet.js'; import assert from 'assert'; assert.strictEqual(greet(), 'Hii'); console.log('Test Passed!');

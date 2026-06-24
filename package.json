@@ -1,0 +1,16 @@
+{
+  "name": "forge2-agent-orchestrator",
+  "version": "1.0.0",
+  "description": "Hermes and OpenClaw Multi-Agent Orchestrator via Slack Socket Mode",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test:agents": "node scripts/test-agents.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.21.4",
+    "dotenv": "^16.4.5",
+    "node-cron": "^3.0.3"
+  },
+  "type": "module"
+}
