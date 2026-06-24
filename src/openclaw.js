@@ -15,7 +15,7 @@ export function initOpenClaw(app) {
   async function postToChannel(channelName, text) {
     try {
       const result = await app.client.conversations.list({
-        types: 'public_channel,private_channel'
+        types: 'public_channel'
       });
       const channel = result.channels.find(c => c.name === channelName.replace('#', ''));
       if (channel) {
@@ -31,10 +31,17 @@ export function initOpenClaw(app) {
 
   // Listen for messages in channels (specifically agent-coder)
   app.message(async ({ message, say }) => {
+    if (message.bot_id) return;
     try {
       // Find if message is in '#agent-coder'
       const chanInfo = await app.client.conversations.info({ channel: message.channel });
-      if (chanInfo.channel.name !== 'agent-coder') return;
+
+console.log("OPENCLAW CHANNEL:", chanInfo.channel.name);
+console.log("OPENCLAW TEXT:", message.text);
+
+if (chanInfo.channel.name !== 'agent-coder') {
+  return;
+}
 
       const text = message.text || '';
       
@@ -68,7 +75,7 @@ Output ONLY a JSON object. Do not include markdown code block formatting (no \`\
   "command": "node test.js"
 }
 `;
-        
+        console.log("Calling Groq for task:", taskId);
         let responseText = await queryGroq([
           { 
             role: 'system', 
@@ -76,7 +83,7 @@ Output ONLY a JSON object. Do not include markdown code block formatting (no \`\
           },
           { role: 'user', content: prompt }
         ]);
-
+        console.log("Raw Groq Response:", responseText);
         // Clean response if backticks are returned
         responseText = responseText.trim();
         if (responseText.startsWith('```')) {
@@ -162,11 +169,19 @@ ${stdoutText || '(empty)'}
 ${stderrText || '(empty)'}
 \`\`\`
 `;
-        
+        console.log("Posting execution report...");
         await postToChannel('#agent-coder', reportMessage);
+        console.log("Execution report posted.");
       }
     } catch (err) {
       console.error('Error in OpenClaw channel message handler:', err.message);
     }
   });
+}
+export async function executeTask(taskId, instruction, app) {
+  console.log(`OpenClaw executing task directly: ${taskId}`);
+
+  // Put all the logic currently inside:
+  // if (text.startsWith('[TASK-ID:') && text.includes('Execute:'))
+  // here.
 }
